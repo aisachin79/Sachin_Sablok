@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sachin Sablok - Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js library for the 3D liquid glass effect -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #e2e8f0;
+        }
+
+        /* Full-screen canvas for the liquid glass effect */
+        #liquid-glass-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Puts the canvas behind the main content */
+        }
+
+        .section-fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .section-fade-in.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .text-gradient {
+            background-image: linear-gradient(to right, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Canvas for the Liquid Glass effect -->
+    <canvas id="liquid-glass-canvas"></canvas>
+
+    <!-- Header & Navigation -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-sm shadow-lg">
+        <nav class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="#hero" class="text-2xl font-bold text-gradient">SACHIN SABLOK</a>
+            <ul class="hidden md:flex space-x-6">
+                <li><a href="#about" class="hover:text-purple-400 transition-colors duration-300">About</a></li>
+                <li><a href="#skills" class="hover:text-purple-400 transition-colors duration-300">Skills</a></li>
+                <li><a href="#experience" class="hover:text-purple-400 transition-colors duration-300">Experience</a></li>
+                <li><a href="#projects" class="hover:text-purple-400 transition-colors duration-300">Projects</a></li>
+                <li><a href="#contact" class="hover:text-purple-400 transition-colors duration-300">Contact</a></li>
+            </ul>
+            <div class="md:hidden">
+                <button id="menu-btn" class="text-white focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-slate-900/90 py-4">
+            <ul class="flex flex-col items-center space-y-4">
+                <li><a href="#about" class="block py-2 hover:text-purple-400 transition-colors duration-300">About</a></li>
+                <li><a href="#skills" class="block py-2 hover:text-purple-400 transition-colors duration-300">Skills</a></li>
+                <li><a href="#experience" class="block py-2 hover:text-purple-400 transition-colors duration-300">Experience</a></li>
+                <li><a href="#projects" class="block py-2 hover:text-purple-400 transition-colors duration-300">Projects</a></li>
+                <li><a href="#contact" class="block py-2 hover:text-purple-400 transition-colors duration-300">Contact</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <main class="pt-24">
+        <!-- Hero Section -->
+        <section id="hero" class="h-screen flex items-center justify-center text-center px-4 bg-slate-900/80">
+            <div class="space-y-6 max-w-4xl">
+                <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white leading-tight">
+                    <span class="text-gradient">SACHIN SABLOK</span>
+                </h1>
+                <p class="text-lg sm:text-xl md:text-2xl text-slate-400 font-light">
+                    A Results-Oriented Professional with over 19 years of experience in
+                    <span class="font-bold">Leadership, Business Operations, Product & Program Management.</span>
+                </p>
+                <a href="#contact" class="inline-block mt-8 px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-full shadow-lg transition-transform transform hover:scale-105 duration-300">
+                    Get in Touch
+                </a>
+            </div>
+        </section>
+
+        <!-- About Me Section -->
+        <section id="about" class="py-20 px-4 bg-slate-900/80 section-fade-in">
+            <div class="container mx-auto max-w-4xl space-y-8">
+                <h2 class="text-3xl sm:text-4xl font-bold text-center text-white">About Me</h2>
+                <div class="text-center text-slate-300 leading-relaxed space-y-4">
+                    <p>
+                        I am a seasoned professional with a passion for driving tangible results through data-driven models and strategic leadership. With a career spanning over 19 years, I've honed my expertise in a diverse range of functions, including Product & Program Management, Business Operations, and Quality Assurance. My journey has equipped me with a deep understanding of how to transform complex data into clear, actionable business insights.
+                    </p>
+                    <p>
+                        My professional approach is rooted in a collaborative mindset, enabling me to work seamlessly with cross-functional teams and manage individuals and groups effectively. I am a firm believer in the power of innovation and have a proven track record of leading change management initiatives and optimizing processes to achieve business excellence.
+                    </p>
+                    <p>
+                        This portfolio is a glimpse into my professional journey, highlighting my contributions to global organizations and my commitment to continuous learning and growth.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="py-20 px-4 bg-slate-800/80 section-fade-in">
+            <div class="container mx-auto max-w-4xl space-y-8">
+                <h2 class="text-3xl sm:text-4xl font-bold text-center text-white">Skills</h2>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6 text-center">
+                    <div class="bg-slate-700/80 p-4 rounded-lg shadow-md hover:bg-slate-600/80 transition-colors duration-300">
+                        <p class="font-medium">Product Management</p>
+                    </div>
+                    <div class="bg-slate-700/80 p-4 rounded-lg shadow-md hover:bg-slate-600/80 transition-colors duration-300">
+                        <p class="font-medium">Program Management</p>
+                    </div>
+                    <div class="bg-slate-700/80 p-4 rounded-lg shadow-md hover:bg-slate-600/80 transition-colors duration-300">
+                        <p class="font-medium">Strategic Planning</p>
+                    </div>
+                    <div class="bg-slate-700/80 p-4 rounded-lg shadow-md hover:bg-slate-600/80 transition-colors duration-300">
+                        <p class="font-medium">Business Analytics</p>
+                    </div>
+                    <div class="bg-slate-700/80 p-4 rounded-lg shadow-md hover:bg-slate-600/80 transition-colors duration-300">
+                        <p class="font-medium">Client Relationship</p>
+                    </div>
+                    <div class="bg-slate-700/80 p-4 rounded-lg shadow-md hover:bg-slate-600/80 transition-colors duration-300">
+                        <p class="font-medium">People Management</p>
+                    </div>
+                    <div class="bg-slate-700/80 p-4 rounded-lg shadow-md hover:bg-slate-600/80 transition-colors duration-300">
+                        <p class="font-medium">Agile Practitioner</p>
+                    </div>
+                    <div class="bg-slate-700/80 p-4 rounded-lg shadow-md hover:bg-slate-600/80 transition-colors duration-300">
+                        <p class="font-medium">Six-Sigma & Lean</p>
+                    </div>
+                    <div class="bg-slate-700/80 p-4 rounded-lg shadow-md hover:bg-slate-600/80 transition-colors duration-300">
+                        <p class="font-medium">Process Improvement</p>
+                    </div>
+                    <div class="bg-slate-700/80 p-4 rounded-lg shadow-md hover:bg-slate-600/80 transition-colors duration-300">
+                        <p class="font-medium">Security Compliance</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section id="experience" class="py-20 px-4 bg-slate-900/80 section-fade-in">
+            <div class="container mx-auto max-w-4xl space-y-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-center text-white">Experience</h2>
+                <!-- J.P. MORGAN -->
+                <div class="relative pl-12 sm:pl-32 border-l-4 border-indigo-600">
+                    <div class="absolute left-0 top-0 h-4 w-4 rounded-full bg-indigo-600 -ml-2 transform -translate-y-1"></div>
+                    <h3 class="text-xl sm:text-2xl font-semibold text-white">J.P. MORGAN</h3>
+                    <p class="text-sm text-slate-400 mb-2">NOV’2022 – PRESENT</p>
+                    <p class="text-lg font-medium text-slate-300">Vice President (Data Foundation Cross Product Manager)</p>
+                    <p class="text-slate-400 mt-2 leading-relaxed">Leverage expertise in data-driven strategies to lead product experience and innovation, collaborating with cross-functional teams to strengthen data product life-cycle and experience. Drive change management and priority alignment to optimize timelines and ensure seamless communication.</p>
+
+                    <p class="text-lg font-medium text-slate-300 mt-4">Vice President (Reporting, Data & Analytics)</p>
+                    <p class="text-slate-400 mt-2 leading-relaxed">Owned and drove business intelligence, analytics, and performance monitoring for Global Technology Infrastructure. Focused on business excellence, automation, and business optimization by collaborating with different business units.</p>
+                </div>
+                <!-- KYNDRYL -->
+                <div class="relative pl-12 sm:pl-32 border-l-4 border-indigo-600">
+                    <div class="absolute left-0 top-0 h-4 w-4 rounded-full bg-indigo-600 -ml-2 transform -translate-y-1"></div>
+                    <h3 class="text-xl sm:text-2xl font-semibold text-white">KYNDRYL</h3>
+                    <p class="text-sm text-slate-400 mb-2">SEP’2021 –NOV’2022</p>
+                    <p class="text-lg font-medium text-slate-300">Program Manager (Application Data & Artificial Intelligence)</p>
+                    <p class="text-slate-400 mt-2 leading-relaxed">Aligned to Global ADAI practice, owning key business functions and supporting delivery. Embraced strategic partnerships with hyperscalers like Microsoft, Google, and Amazon to drive skills enhancement and develop new offerings around their cloud services.</p>
+                </div>
+                 <!-- IBM -->
+                <div class="relative pl-12 sm:pl-32 border-l-4 border-indigo-600">
+                    <div class="absolute left-0 top-0 h-4 w-4 rounded-full bg-indigo-600 -ml-2 transform -translate-y-1"></div>
+                    <h3 class="text-xl sm:text-2xl font-semibold text-white">IBM</h3>
+                    <p class="text-sm text-slate-400 mb-2">SEP’2013 – AUG’2021</p>
+                    <p class="text-lg font-medium text-slate-300">Program Manager</p>
+                    <p class="text-slate-400 mt-2 leading-relaxed">Drove strategic initiatives focused on Enterprise Services, owning Analytics and Automation Development (SaaS) and collaborating to design and deliver modernization roadmaps across all regions.</p>
+                </div>
+                 <!-- WIPRO -->
+                <div class="relative pl-12 sm:pl-32 border-l-4 border-indigo-600">
+                    <div class="absolute left-0 top-0 h-4 w-4 rounded-full bg-indigo-600 -ml-2 transform -translate-y-1"></div>
+                    <h3 class="text-xl sm:text-2xl font-semibold text-white">WIPRO</h3>
+                    <p class="text-sm text-slate-400 mb-2">JUN’2006 – AUG’2013</p>
+                    <p class="text-lg font-medium text-slate-300">Business Analyst (PMO)</p>
+                    <p class="text-slate-400 mt-2 leading-relaxed">Responsible for business planning, including revenue and resource management. Involved in strategic planning for new projects, evaluating proposals, and facilitating monthly service governance in a multi-vendor environment.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section (using Achievements) -->
+        <section id="projects" class="py-20 px-4 bg-slate-800/80 section-fade-in">
+            <div class="container mx-auto max-w-4xl space-y-8">
+                <h2 class="text-3xl sm:text-4xl font-bold text-center text-white">Key Achievements & Initiatives</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Achievement Card 1 -->
+                    <div class="bg-slate-700/80 rounded-lg shadow-xl p-6 hover:shadow-2xl transition-shadow duration-300">
+                        <h3 class="text-xl font-bold text-white mb-2">IBM - Hall of Fame</h3>
+                        <p class="text-slate-300">Proud recipient of the prestigious IBM – Hall of Fame award, a recognition of sustained excellence and significant contributions to the organization.</p>
+                    </div>
+                    <!-- Achievement Card 2 -->
+                    <div class="bg-slate-700/80 rounded-lg shadow-xl p-6 hover:shadow-2xl transition-shadow duration-300">
+                        <h3 class="text-xl font-bold text-white mb-2">Watson Analytics Leadership</h3>
+                        <p class="text-slate-300">Led Watson Analytics as a Product Manager to enable comprehensive reporting and governance across all APAC accounts, driving data-driven decision-making.</p>
+                    </div>
+                    <!-- Achievement Card 3 -->
+                    <div class="bg-slate-700/80 rounded-lg shadow-xl p-6 hover:shadow-2xl transition-shadow duration-300">
+                        <h3 class="text-xl font-bold text-white mb-2">Automated Risk Management</h3>
+                        <p class="text-slate-300">Developed and implemented an Automated “Risk Management Orchestration” system, significantly streamlining a critical business process.</p>
+                    </div>
+                    <!-- Achievement Card 4 -->
+                    <div class="bg-slate-700/80 rounded-lg shadow-xl p-6 hover:shadow-2xl transition-shadow duration-300">
+                        <h3 class="text-xl font-bold text-white mb-2">Qlikview Analytics Implementation</h3>
+                        <p class="text-slate-300">Successfully implemented Qlikview Analytics, providing real-time exploratory analysis capabilities for the account and empowering better insights.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-20 px-4 bg-slate-900/80 section-fade-in">
+            <div class="container mx-auto max-w-2xl space-y-8 text-center">
+                <h2 class="text-3xl sm:text-4xl font-bold text-white">Contact Me</h2>
+                <p class="text-slate-400 leading-relaxed">I am always open to new opportunities and discussions. Please feel free to reach out to me via email or phone, or connect with me on LinkedIn.</p>
+                <div class="flex flex-col sm:flex-row justify-center items-center gap-6">
+                    <a href="mailto:sablok.profile84@gmail.com" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-full shadow-lg transition-transform transform hover:scale-105 duration-300">
+                        Email Me
+                    </a>
+                    <a href="https://www.linkedin.com/in/sachinsablok/" target="_blank" class="px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white font-medium rounded-full shadow-lg transition-transform transform hover:scale-105 duration-300">
+                        Connect on LinkedIn
+                    </a>
+                </div>
+                <div class="mt-8 space-y-2 text-slate-400">
+                    <p><strong>Phone:</strong> (+91) 78931 77099</p>
+                    <p><strong>Email:</strong> sablok.profile84@gmail.com</p>
+                    <p><strong>Location:</strong> Hyderabad, India</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950/80 py-8 text-center text-slate-500">
+        <p>&copy; 2024 Sachin Sablok. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Smooth scroll and fade-in animation
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('.section-fade-in');
+
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15 });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            // Mobile menu toggle
+            const menuBtn = document.getElementById('menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Close mobile menu on link click
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+
+            // Liquid Glass Effect with Three.js
+            const canvas = document.getElementById('liquid-glass-canvas');
+            const renderer = new THREE.WebGLRenderer({ canvas: canvas });
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+            let mouse = new THREE.Vector2(0, 0);
+
+            // Shaders for the liquid glass effect
+            const vertexShader = `
+                uniform float u_time;
+                uniform vec2 u_mouse;
+                varying vec3 v_normal;
+                varying vec3 v_position;
+
+                void main() {
+                    v_normal = normalize(normalMatrix * normal);
+                    vec3 displacedPosition = position;
+                    // Displace vertices to create a liquid-like wave effect
+                    float displacement = sin(u_time * 0.5 + displacedPosition.x * 2.0) * 0.1;
+                    displacedPosition.z += displacement;
+                    v_position = displacedPosition;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(displacedPosition, 1.0);
+                }
+            `;
+
+            const fragmentShader = `
+                uniform float u_time;
+                uniform vec2 u_resolution;
+                uniform vec2 u_mouse;
+                varying vec3 v_normal;
+                varying vec3 v_position;
+
+                void main() {
+                    // Normalize mouse coordinates for use in shader
+                    vec2 mouse_norm = u_mouse / u_resolution;
+                    
+                    vec3 color = vec3(0.2, 0.4, 0.9);
+                    vec3 lightDir = normalize(vec3(1.0, 1.0, 1.0));
+                    float diffuse = max(dot(v_normal, lightDir), 0.0);
+                    vec3 ambient = vec3(0.3);
+                    vec3 finalColor = color * (ambient + diffuse);
+                    
+                    // Simple fresnel effect for a glassy look
+                    float fresnel = pow(1.0 - dot(v_normal, vec3(0.0, 0.0, 1.0)), 2.0);
+                    finalColor += vec3(fresnel);
+
+                    // Simple mouse interaction effect
+                    float dist = distance(gl_FragCoord.xy / u_resolution.xy, mouse_norm);
+                    finalColor += vec3(1.0 - dist);
+
+                    gl_FragColor = vec4(finalColor, 0.5); /* Use a semi-transparent alpha */
+                }
+            `;
+
+            const geometry = new THREE.PlaneGeometry(10, 10, 128, 128);
+            const material = new THREE.ShaderMaterial({
+                vertexShader: vertexShader,
+                fragmentShader: fragmentShader,
+                uniforms: {
+                    u_time: { value: 0.0 },
+                    u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+                    u_mouse: { value: new THREE.Vector2(0, 0) }
+                },
+                transparent: true
+            });
+
+            const plane = new THREE.Mesh(geometry, material);
+            scene.add(plane);
+            camera.position.z = 5;
+
+            // Handle window resize
+            function onWindowResize() {
+                const width = window.innerWidth;
+                const height = window.innerHeight;
+                renderer.setSize(width, height);
+                camera.aspect = width / height;
+                camera.updateProjectionMatrix();
+                material.uniforms.u_resolution.value.set(width, height);
+            }
+            window.addEventListener('resize', onWindowResize);
+
+            // Handle mouse movement for interaction
+            document.addEventListener('mousemove', (event) => {
+                mouse.x = event.clientX;
+                mouse.y = window.innerHeight - event.clientY; // Flip Y for WebGL coords
+                material.uniforms.u_mouse.value.set(mouse.x, mouse.y);
+            });
+
+            // Animation loop
+            function animate() {
+                requestAnimationFrame(animate);
+                material.uniforms.u_time.value += 0.01;
+                renderer.render(scene, camera);
+            }
+
+            // Start the animation on window load.
+            animate();
+        });
+    </script>
+</body>
+</html>
