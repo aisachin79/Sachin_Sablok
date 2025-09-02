@@ -5,60 +5,131 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sachin Sablok - Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Three.js library for the 3D liquid glass effect -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        html, body {
+            height: 100%;
+            overflow-x: hidden;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: #0f172a;
             color: #e2e8f0;
+            overflow-y: scroll;
         }
 
-        /* Full-screen canvas for the liquid glass effect */
-        #liquid-glass-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1; /* Puts the canvas behind the main content */
+        .main-container {
+            max-width: 1280px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .section-fade-in {
+        .animate-on-scroll {
             opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            transform: translateY(30px);
+            transition: opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
-        .section-fade-in.is-visible {
+        .animate-on-scroll.staggered-item {
+            transition-delay: var(--delay);
+        }
+
+        .is-visible {
             opacity: 1;
             transform: translateY(0);
         }
-        .text-gradient {
-            background-image: linear-gradient(to right, #6366f1, #8b5cf6);
+
+        .name-gradient {
+            background-image: linear-gradient(to right, #3B82F6, #1D4ED8);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111827;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #3B82F6;
+            border-radius: 5px;
+            border: 2px solid #111827;
+        }
+        
+        @media (prefers-reduced-motion: no-preference) {
+            ::view-transition-old(root) {
+                animation: fadeOut .3s ease-out;
+            }
+            ::view-transition-new(root) {
+                animation: fadeIn .3s ease-in;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        /* New styles for the interactive experience folds */
+        .accordion-button {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: background 0.3s ease-in-out, transform 0.2s ease-in-out, border 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        .accordion-button:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(1.01);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .accordion-button.active {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            border-color: #3B82F6;
+            background: rgba(59, 130, 246, 0.2);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), padding 0.5s ease-in-out;
+            background: #1a2035;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: none;
+        }
+
+        .accordion-content.open {
+            max-height: 1000px;
         }
     </style>
 </head>
 <body class="antialiased">
 
-    <!-- Canvas for the Liquid Glass effect -->
-    <canvas id="liquid-glass-canvas"></canvas>
-
     <!-- Header & Navigation -->
-    <header class="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-sm shadow-lg">
-        <nav class="container mx-auto px-4 py-6 flex justify-between items-center">
-            <a href="#hero" class="text-2xl font-bold text-gradient">SACHIN SABLOK</a>
-            <ul class="hidden md:flex space-x-6">
-                <li><a href="#about" class="hover:text-purple-400 transition-colors duration-300">About</a></li>
-                <li><a href="#skills" class="hover:text-purple-400 transition-colors duration-300">Skills</a></li>
-                <li><a href="#certifications" class="hover:text-purple-400 transition-colors duration-300">Certifications</a></li>
-                <li><a href="#experience" class="hover:text-purple-400 transition-colors duration-300">Experience</a></li>
-                <li><a href="#projects" class="hover:text-purple-400 transition-colors duration-300">Projects</a></li>
-                <li><a href="#contact" class="hover:text-purple-400 transition-colors duration-300">Contact</a></li>
+    <header id="main-header" class="fixed top-0 left-0 right-0 z-50 transition-colors duration-300">
+        <nav class="main-container px-8 py-6 flex justify-between items-center">
+            <a href="#hero" class="text-2xl font-bold text-white transition-colors duration-300">SACHIN SABLOK</a>
+            <ul class="hidden md:flex space-x-8 text-lg">
+                <li><a href="#about" class="hover:text-blue-400 transition-colors duration-300">About</a></li>
+                <li><a href="#skills" class="hover:text-blue-400 transition-colors duration-300">Skills</a></li>
+                <li><a href="#certifications" class="hover:text-blue-400 transition-colors duration-300">Certifications</a></li>
+                <li><a href="#experience" class="hover:text-blue-400 transition-colors duration-300">Experience</a></li>
+                <li><a href="#projects" class="hover:text-blue-400 transition-colors duration-300">Projects</a></li>
+                <li><a href="#contact" class="hover:text-blue-400 transition-colors duration-300">Contact</a></li>
             </ul>
             <div class="md:hidden">
                 <button id="menu-btn" class="text-white focus:outline-none">
@@ -71,38 +142,42 @@
         <!-- Mobile Menu -->
         <div id="mobile-menu" class="hidden md:hidden bg-slate-900/90 py-4">
             <ul class="flex flex-col items-center space-y-4">
-                <li><a href="#about" class="block py-2 hover:text-purple-400 transition-colors duration-300">About</a></li>
-                <li><a href="#skills" class="block py-2 hover:text-purple-400 transition-colors duration-300">Skills</a></li>
-                <li><a href="#certifications" class="block py-2 hover:text-purple-400 transition-colors duration-300">Certifications</a></li>
-                <li><a href="#experience" class="block py-2 hover:text-purple-400 transition-colors duration-300">Experience</a></li>
-                <li><a href="#projects" class="block py-2 hover:text-purple-400 transition-colors duration-300">Projects</a></li>
-                <li><a href="#contact" class="block py-2 hover:text-purple-400 transition-colors duration-300">Contact</a></li>
+                <li><a href="#about" class="block py-2 hover:text-blue-400 transition-colors duration-300">About</a></li>
+                <li><a href="#skills" class="block py-2 hover:text-blue-400 transition-colors duration-300">Skills</a></li>
+                <li><a href="#certifications" class="block py-2 hover:text-blue-400 transition-colors duration-300">Certifications</a></li>
+                <li><a href="#experience" class="block py-2 hover:text-blue-400 transition-colors duration-300">Experience</a></li>
+                <li><a href="#projects" class="block py-2 hover:text-blue-400 transition-colors duration-300">Projects</a></li>
+                <li><a href="#contact" class="block py-2 hover:text-blue-400 transition-colors duration-300">Contact</a></li>
             </ul>
         </div>
     </header>
 
-    <main class="pt-24">
+    <main class="min-h-screen main-container">
         <!-- Hero Section -->
-        <section id="hero" class="h-screen flex items-center justify-center text-center px-4">
-            <div class="space-y-6 max-w-4xl">
-                <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white leading-tight">
-                    <span class="text-gradient">SACHIN SABLOK</span>
+        <section id="hero" class="min-h-screen flex items-center justify-center text-center px-4">
+            <div class="space-y-6 max-w-4xl animate-on-scroll">
+                <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white leading-tight drop-shadow-lg">
+                    <span class="name-gradient">SACHIN SABLOK</span>
                 </h1>
                 <p class="text-lg sm:text-xl md:text-2xl text-slate-400 font-light">
                     A Results-Oriented Professional with over 19 years of experience in
                     <span class="font-bold">Leadership, Business Operations, Product & Program Management.</span>
                 </p>
-                <a href="#about" class="inline-block mt-8 px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-full shadow-lg transition-transform transform hover:scale-105 duration-300">
+                <a href="#about" class="inline-block mt-8 px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-full shadow-lg transition-transform transform hover:scale-105 duration-300">
                     About Me
                 </a>
             </div>
         </section>
 
         <!-- About Me Section -->
-        <section id="about" class="py-20 px-4 bg-slate-900/80 section-fade-in">
-            <div class="container mx-auto max-w-4xl space-y-8">
-                <h2 class="text-3xl sm:text-4xl font-bold text-center text-white">About Me</h2>
-                <div class="text-center text-slate-300 leading-relaxed space-y-4">
+        <section id="about" class="py-20 px-4 bg-slate-900/80 rounded-lg animate-on-scroll mb-8 relative overflow-hidden">
+            <div class="absolute inset-0 z-0 opacity-10">
+                <div class="w-64 h-64 bg-blue-600 rounded-full blur-3xl absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 animate-pulse"></div>
+                <div class="w-48 h-48 bg-slate-500 rounded-full blur-3xl absolute bottom-0 right-0 translate-x-1/2 translate-y-1/2 animate-pulse" style="animation-delay: 1.5s;"></div>
+            </div>
+            <div class="container mx-auto max-w-4xl space-y-8 relative z-10">
+                <h2 class="text-3xl sm:text-4xl font-bold text-center text-white animate-on-scroll">About Me</h2>
+                <div class="text-center text-slate-300 leading-relaxed space-y-4 animate-on-scroll">
                     <p>
                         I am a seasoned professional with a passion for driving tangible results through data-driven models and strategic leadership. With a career spanning over 19 years, I've honed my expertise in a diverse range of functions, including Product & Program Management, Business Operations, and Quality Assurance. My journey has equipped me with a deep understanding of how to transform complex data into clear, actionable business insights.
                     </p>
@@ -117,38 +192,39 @@
         </section>
 
         <!-- Skills Section -->
-        <section id="skills" class="py-20 px-4 bg-slate-800/80 section-fade-in">
+        <section id="skills" class="py-20 px-4 bg-slate-800/80 rounded-lg animate-on-scroll mb-8">
             <div class="container mx-auto max-w-4xl space-y-8">
-                <h2 class="text-3xl sm:text-4xl font-bold text-center text-white">Skills</h2>
+                <h2 class="text-3xl sm:text-4xl font-bold text-center text-white animate-on-scroll">Skills</h2>
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6 text-center">
-                    <div class="bg-slate-700/80 p-4 rounded-lg shadow-md hover:bg-slate-600/80 transition-colors duration-300">
+                    <!-- Skills will have a slight tilt and scale on hover -->
+                    <div class="bg-slate-700/80 p-4 rounded-lg shadow-md hover:bg-slate-600/80 transition-all duration-300 animate-on-scroll staggered-item hover:scale-105 hover:rotate-2" style="--delay: 0.1s">
                         <p class="font-medium">Product Management</p>
                     </div>
-                    <div class="bg-slate-700/80 p-4 rounded-lg shadow-md hover:bg-slate-600/80 transition-colors duration-300">
+                    <div class="bg-slate-700/80 p-4 rounded-lg shadow-md hover:bg-slate-600/80 transition-all duration-300 animate-on-scroll staggered-item hover:scale-105 hover:rotate-2" style="--delay: 0.2s">
                         <p class="font-medium">Program Management</p>
                     </div>
-                    <div class="bg-slate-700/80 p-4 rounded-lg shadow-md hover:bg-slate-600/80 transition-colors duration-300">
+                    <div class="bg-slate-700/80 p-4 rounded-lg shadow-md hover:bg-slate-600/80 transition-all duration-300 animate-on-scroll staggered-item hover:scale-105 hover:rotate-2" style="--delay: 0.3s">
                         <p class="font-medium">Strategic Planning</p>
                     </div>
-                    <div class="bg-slate-700/80 p-4 rounded-lg shadow-md hover:bg-slate-600/80 transition-colors duration-300">
+                    <div class="bg-slate-700/80 p-4 rounded-lg shadow-md hover:bg-slate-600/80 transition-all duration-300 animate-on-scroll staggered-item hover:scale-105 hover:rotate-2" style="--delay: 0.4s">
                         <p class="font-medium">Business Analytics</p>
                     </div>
-                    <div class="bg-slate-700/80 p-4 rounded-lg shadow-md hover:bg-slate-600/80 transition-colors duration-300">
+                    <div class="bg-slate-700/80 p-4 rounded-lg shadow-md hover:bg-slate-600/80 transition-all duration-300 animate-on-scroll staggered-item hover:scale-105 hover:rotate-2" style="--delay: 0.5s">
                         <p class="font-medium">Client Relationship</p>
                     </div>
-                    <div class="bg-slate-700/80 p-4 rounded-lg shadow-md hover:bg-slate-600/80 transition-colors duration-300">
+                    <div class="bg-slate-700/80 p-4 rounded-lg shadow-md hover:bg-slate-600/80 transition-all duration-300 animate-on-scroll staggered-item hover:scale-105 hover:rotate-2" style="--delay: 0.6s">
                         <p class="font-medium">People Management</p>
                     </div>
-                    <div class="bg-slate-700/80 p-4 rounded-lg shadow-md hover:bg-slate-600/80 transition-colors duration-300">
+                    <div class="bg-slate-700/80 p-4 rounded-lg shadow-md hover:bg-slate-600/80 transition-all duration-300 animate-on-scroll staggered-item hover:scale-105 hover:rotate-2" style="--delay: 0.7s">
                         <p class="font-medium">Agile Practitioner</p>
                     </div>
-                    <div class="bg-slate-700/80 p-4 rounded-lg shadow-md hover:bg-slate-600/80 transition-colors duration-300">
+                    <div class="bg-slate-700/80 p-4 rounded-lg shadow-md hover:bg-slate-600/80 transition-all duration-300 animate-on-scroll staggered-item hover:scale-105 hover:rotate-2" style="--delay: 0.8s">
                         <p class="font-medium">Six-Sigma & Lean</p>
                     </div>
-                    <div class="bg-slate-700/80 p-4 rounded-lg shadow-md hover:bg-slate-600/80 transition-colors duration-300">
+                    <div class="bg-slate-700/80 p-4 rounded-lg shadow-md hover:bg-slate-600/80 transition-all duration-300 animate-on-scroll staggered-item hover:scale-105 hover:rotate-2" style="--delay: 0.9s">
                         <p class="font-medium">Process Improvement</p>
                     </div>
-                    <div class="bg-slate-700/80 p-4 rounded-lg shadow-md hover:bg-slate-600/80 transition-colors duration-300">
+                    <div class="bg-slate-700/80 p-4 rounded-lg shadow-md hover:bg-slate-600/80 transition-all duration-300 animate-on-scroll staggered-item hover:scale-105 hover:rotate-2" style="--delay: 1.0s">
                         <p class="font-medium">Security Compliance</p>
                     </div>
                 </div>
@@ -156,71 +232,63 @@
         </section>
 
         <!-- Training & Certifications Section -->
-        <section id="certifications" class="py-20 px-4 bg-slate-900/80 section-fade-in">
+        <section id="certifications" class="py-20 px-4 bg-slate-900/80 rounded-lg animate-on-scroll mb-8">
             <div class="container mx-auto max-w-4xl space-y-8">
-                <h2 class="text-3xl sm:text-4xl font-bold text-center text-white">Training & Certifications</h2>
+                <h2 class="text-3xl sm:text-4xl font-bold text-center text-white animate-on-scroll">Training & Certifications</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-center">
-                    <!-- AWS Certified Cloud Practitioner -->
-                    <div class="bg-slate-800/80 p-6 rounded-lg shadow-md flex flex-col items-center hover:bg-slate-700/80 transition-colors duration-300">
+                    <!-- Cards with subtle hover glow -->
+                    <div class="bg-slate-800/80 p-6 rounded-lg shadow-md flex flex-col items-center transition-all duration-300 group hover:bg-slate-700/80 hover:ring-2 hover:ring-blue-500/50 hover:ring-offset-2 hover:ring-offset-slate-900 animate-on-scroll staggered-item" style="--delay: 0.1s">
                         <a href="https://www.credly.com/badges/0f639d6f-5a06-4f22-9abc-9a71f3fe531f/public_url" target="_blank" class="flex flex-col items-center">
-                            <img src="location/aws_cert.png" alt="AWS Certified Cloud Practitioner" class="w-24 h-24 mb-4 rounded-md">
-                            <p class="font-medium text-white">AWS Certified Cloud Practitioner</p>
+                            <img src="https://placehold.co/100x100/333333/FFFFFF?text=AWS" alt="AWS Certified Cloud Practitioner" class="w-24 h-24 mb-4 rounded-md transition-transform duration-300 group-hover:scale-110">
+                            <p class="font-medium text-white group-hover:text-blue-400 transition-colors duration-300">AWS Certified Cloud Practitioner</p>
                         </a>
                     </div>
-                    <!-- AI Project Mgmt -->
-                    <div class="bg-slate-800/80 p-6 rounded-lg shadow-md flex flex-col items-center hover:bg-slate-700/80 transition-colors duration-300">
+                    <div class="bg-slate-800/80 p-6 rounded-lg shadow-md flex flex-col items-center transition-all duration-300 group hover:bg-slate-700/80 hover:ring-2 hover:ring-blue-500/50 hover:ring-offset-2 hover:ring-offset-slate-900 animate-on-scroll staggered-item" style="--delay: 0.2s">
                         <a href="https://www.credly.com/badges/edc27347-4ac3-428a-b211-29ed4c646895/public_url" target="_blank" class="flex flex-col items-center">
-                            <img src="location/ai-project-mgmt.png" alt="AI Project Management" class="w-24 h-24 mb-4 rounded-md">
-                            <p class="font-medium text-white">AI Project Management</p>
+                            <img src="https://placehold.co/100x100/333333/FFFFFF?text=AI+PM" alt="AI Project Management" class="w-24 h-24 mb-4 rounded-md transition-transform duration-300 group-hover:scale-110">
+                            <p class="font-medium text-white group-hover:text-blue-400 transition-colors duration-300">AI Project Management</p>
                         </a>
                     </div>
-                    <!-- Enterprise Design Thinking Practitioner -->
-                    <div class="bg-slate-800/80 p-6 rounded-lg shadow-md flex flex-col items-center hover:bg-slate-700/80 transition-colors duration-300">
+                    <div class="bg-slate-800/80 p-6 rounded-lg shadow-md flex flex-col items-center transition-all duration-300 group hover:bg-slate-700/80 hover:ring-2 hover:ring-blue-500/50 hover:ring-offset-2 hover:ring-offset-slate-900 animate-on-scroll staggered-item" style="--delay: 0.3s">
                         <a href="https://www.credly.com/badges/b9464818-589b-4efb-abf1-381ca24a1cd1/public_url" target="_blank" class="flex flex-col items-center">
-                            <img src="location/enterprise-design-thinking-practitioner.png" alt="Enterprise Design Thinking Practitioner" class="w-24 h-24 mb-4 rounded-md">
-                            <p class="font-medium text-white">Enterprise Design Thinking Practitioner</p>
+                            <img src="https://placehold.co/100x100/333333/FFFFFF?text=IBM+DT" alt="Enterprise Design Thinking Practitioner" class="w-24 h-24 mb-4 rounded-md transition-transform duration-300 group-hover:scale-110">
+                            <p class="font-medium text-white group-hover:text-blue-400 transition-colors duration-300">Enterprise Design Thinking Practitioner</p>
                         </a>
                     </div>
-                    <!-- IBM Agile Champion -->
-                    <div class="bg-slate-800/80 p-6 rounded-lg shadow-md flex flex-col items-center hover:bg-slate-700/80 transition-colors duration-300">
+                    <div class="bg-slate-800/80 p-6 rounded-lg shadow-md flex flex-col items-center transition-all duration-300 group hover:bg-slate-700/80 hover:ring-2 hover:ring-blue-500/50 hover:ring-offset-2 hover:ring-offset-slate-900 animate-on-scroll staggered-item" style="--delay: 0.4s">
                         <a href="https://www.credly.com/badges/a61bdf32-b3c4-41d8-9198-eef47595dd67/public_url" target="_blank" class="flex flex-col items-center">
-                            <img src="location/ibm-agile-champion.png" alt="IBM Agile Champion" class="w-24 h-24 mb-4 rounded-md">
-                            <p class="font-medium text-white">IBM Agile Champion</p>
+                            <img src="https://placehold.co/100x100/333333/FFFFFF?text=Agile" alt="IBM Agile Champion" class="w-24 h-24 mb-4 rounded-md transition-transform duration-300 group-hover:scale-110">
+                            <p class="font-medium text-white group-hover:text-blue-400 transition-colors duration-300">IBM Agile Champion</p>
                         </a>
                     </div>
-                    <!-- Community Engineering Champion -->
-                    <div class="bg-slate-800/80 p-6 rounded-lg shadow-md flex flex-col items-center hover:bg-slate-700/80 transition-colors duration-300">
+                    <div class="bg-slate-800/80 p-6 rounded-lg shadow-md flex flex-col items-center transition-all duration-300 group hover:bg-slate-700/80 hover:ring-2 hover:ring-blue-500/50 hover:ring-offset-2 hover:ring-offset-slate-900 animate-on-scroll staggered-item" style="--delay: 0.5s">
                         <a href="https://www.credly.com/badges/261ebf32-8b72-47ce-8431-def68a638194/public_url" target="_blank" class="flex flex-col items-center">
-                            <img src="location/community-engineering-champion.png" alt="Community Engineering Champion" class="w-24 h-24 mb-4 rounded-md">
-                            <p class="font-medium text-white">Community Engineering Champion</p>
+                            <img src="https://placehold.co/100x100/333333/FFFFFF?text=Comm+Eng" alt="Community Engineering Champion" class="w-24 h-24 mb-4 rounded-md transition-transform duration-300 group-hover:scale-110">
+                            <p class="font-medium text-white group-hover:text-blue-400 transition-colors duration-300">Community Engineering Champion</p>
                         </a>
                     </div>
-                    <!-- IBM Recognized Speaker/ Presenter -->
-                    <div class="bg-slate-800/80 p-6 rounded-lg shadow-md flex flex-col items-center hover:bg-slate-700/80 transition-colors duration-300">
+                    <div class="bg-slate-800/80 p-6 rounded-lg shadow-md flex flex-col items-center transition-all duration-300 group hover:bg-slate-700/80 hover:ring-2 hover:ring-blue-500/50 hover:ring-offset-2 hover:ring-offset-slate-900 animate-on-scroll staggered-item" style="--delay: 0.6s">
                         <a href="https://www.credly.com/badges/3ca53083-add9-4360-98a7-4769f58959f3/public_url" target="_blank" class="flex flex-col items-center">
-                            <img src="location/ibm-recognized-speaker-presenter.png" alt="IBM Recognized Speaker/ Presenter" class="w-24 h-24 mb-4 rounded-md">
-                            <p class="font-medium text-white">IBM Recognized Speaker/ Presenter</p>
+                            <img src="https://placehold.co/100x100/333333/FFFFFF?text=Speaker" alt="IBM Recognized Speaker/ Presenter" class="w-24 h-24 mb-4 rounded-md transition-transform duration-300 group-hover:scale-110">
+                            <p class="font-medium text-white group-hover:text-blue-400 transition-colors duration-300">IBM Recognized Speaker/ Presenter</p>
                         </a>
                     </div>
-                    <!-- ISO/IEC 20000 Auditor -->
-                    <div class="bg-slate-800/80 p-6 rounded-lg shadow-md flex flex-col items-center hover:bg-slate-700/80 transition-colors duration-300">
+                    <div class="bg-slate-800/80 p-6 rounded-lg shadow-md flex flex-col items-center transition-all duration-300 group hover:bg-slate-700/80 hover:ring-2 hover:ring-blue-500/50 hover:ring-offset-2 hover:ring-offset-slate-900 animate-on-scroll staggered-item" style="--delay: 0.7s">
                         <a href="https://www.credly.com/badges/180c6a88-5ade-4f47-bcab-76e98e2aa162/public_url" target="_blank" class="flex flex-col items-center">
-                            <img src="location/iso-iec-20000-auditor.png" alt="ISO/IEC 20000 Auditor" class="w-24 h-24 mb-4 rounded-md">
-                            <p class="font-medium text-white">ISO/IEC 20000 Auditor</p>
+                            <img src="https://placehold.co/100x100/333333/FFFFFF?text=ISO" alt="ISO/IEC 20000 Auditor" class="w-24 h-24 mb-4 rounded-md transition-transform duration-300 group-hover:scale-110">
+                            <p class="font-medium text-white group-hover:text-blue-400 transition-colors duration-300">ISO/IEC 20000 Auditor</p>
                         </a>
                     </div>
-                     <!-- Delivery Beyond Features -->
-                     <div class="bg-slate-800/80 p-6 rounded-lg shadow-md flex flex-col items-center hover:bg-slate-700/80 transition-colors duration-300">
+                     <div class="bg-slate-800/80 p-6 rounded-lg shadow-md flex flex-col items-center transition-all duration-300 group hover:bg-slate-700/80 hover:ring-2 hover:ring-blue-500/50 hover:ring-offset-2 hover:ring-offset-slate-900 animate-on-scroll staggered-item" style="--delay: 0.8s">
                         <a href="https://www.credly.com/badges/dac8ef5a-d450-4b40-aaca-0115396e8737/public_url" target="_blank" class="flex flex-col items-center">
-                            <img src="location/delivery-beyond-features.png" alt="Delivery Beyond Features" class="w-24 h-24 mb-4 rounded-md">
-                            <p class="font-medium text-white">Delivery Beyond Features</p>
+                            <img src="https://placehold.co/100x100/333333/FFFFFF?text=Features" alt="Delivery Beyond Features" class="w-24 h-24 mb-4 rounded-md transition-transform duration-300 group-hover:scale-110">
+                            <p class="font-medium text-white group-hover:text-blue-400 transition-colors duration-300">Delivery Beyond Features</p>
                         </a>
                     </div>
-                    <!-- Snowflake Platform Certification -->
-                    <div class="bg-slate-800/80 p-6 rounded-lg shadow-md flex flex-col items-center hover:bg-slate-700/80 transition-colors duration-300">
+                    <div class="bg-slate-800/80 p-6 rounded-lg shadow-md flex flex-col items-center transition-all duration-300 group hover:bg-slate-700/80 hover:ring-2 hover:ring-blue-500/50 hover:ring-offset-2 hover:ring-offset-slate-900 animate-on-scroll staggered-item" style="--delay: 0.9s">
                         <a href="https://www.linkedin.com/posts/activity-7367924731255119872-SxdH?utm_source=share&utm_medium=member_desktop&rcm=ACoAAAORHckB8C41CgIddyzRSx50OIf_AjVnetQ" target="_blank" class="flex flex-col items-center">
-                            <img src="location/snowflake-color.png" alt="Snowflake Platform Certification" class="w-24 h-24 mb-4 rounded-md">
-                            <p class="font-medium text-white">Snowflake Platform Certification</p>
+                            <img src="https://placehold.co/100x100/333333/FFFFFF?text=Snowflake" alt="Snowflake Platform Certification" class="w-24 h-24 mb-4 rounded-md transition-transform duration-300 group-hover:scale-110">
+                            <p class="font-medium text-white group-hover:text-blue-400 transition-colors duration-300">Snowflake Platform Certification</p>
                         </a>
                     </div>
                 </div>
@@ -228,90 +296,155 @@
         </section>
 
         <!-- Experience Section -->
-        <section id="experience" class="py-20 px-4 bg-slate-800/80 section-fade-in">
-            <div class="container mx-auto max-w-4xl space-y-12">
-                <h2 class="text-3xl sm:text-4xl font-bold text-center text-white">Experience</h2>
-                <!-- J.P. MORGAN -->
-                <div class="relative pl-12 sm:pl-32 border-l-4 border-indigo-600">
-                    <div class="absolute left-0 top-0 h-4 w-4 rounded-full bg-indigo-600 -ml-2 transform -translate-y-1"></div>
-                    <h3 class="text-xl sm:text-2xl font-semibold text-white">J.P. MORGAN</h3>
-                    <p class="text-sm text-slate-400 mb-2">NOV’2022 – PRESENT</p>
-                    <p class="text-lg font-medium text-slate-300">Vice President (Data Foundation Cross Product Manager)</p>
-                    <p class="text-slate-400 mt-2 leading-relaxed">Leverage expertise in data-driven strategies to lead product experience and innovation, collaborating with cross-functional teams to strengthen data product life-cycle and experience. Drive change management and priority alignment to optimize timelines and ensure seamless communication.</p>
+        <section id="experience" class="py-20 px-4 bg-slate-800/80 rounded-lg animate-on-scroll mb-8">
+            <div class="container mx-auto max-w-4xl space-y-4">
+                <h2 class="text-3xl sm:text-4xl font-bold text-center text-white animate-on-scroll mb-8">Experience</h2>
+                
+                <!-- Accordion Tabs -->
+                <div class="space-y-4">
+                    <div class="accordion-item">
+                        <button id="tab-jpmorgan" class="accordion-button w-full px-6 py-4 rounded-xl text-left flex justify-between items-center focus:outline-none">
+                            <div>
+                                <h3 class="text-2xl font-semibold text-white">J.P. MORGAN</h3>
+                                <p class="text-sm text-slate-400 mt-1">NOV’2022 – PRESENT</p>
+                            </div>
+                            <svg class="w-6 h-6 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div id="content-jpmorgan" class="accordion-content transition-all duration-500 rounded-b-xl ease-in-out p-6">
+                            <div class="space-y-6">
+                                <div>
+                                    <h4 class="text-lg font-medium text-slate-300 mb-2">Vice President (Data Foundation Cross Product Manager)</h4>
+                                    <p class="text-slate-400 leading-relaxed text-sm">As a VP Product Manager in Data Foundation Team, I leverage my expertise in data-driven strategies to lead product experience and innovation. My role involves collaboration with cross-functional teams to strengthen data product life-cycle and experience. This encompasses managing intake, delivery feasibility, dependency management, release management, product operationalization, and decision-making in accordance with Data Governance and Compliance processes. I lead collaboration and priority alignment with the Governance Team, driving change management activities, with a focus on optimizing timelines, addressing dependencies and monitoring blockers to ensure adequate resourcing and seamless communication.</p>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-medium text-slate-300 mb-2">Vice President (Reporting, Data & Analytics)</h4>
+                                    <p class="text-slate-400 leading-relaxed text-sm">Aligned to J.P. Morgan Chase Global Technology Infrastructure (GTI), enabling business strategy by owning and driving business intelligence and analytics, performance monitoring, across multiple Projects and Programs. Owning key Business responsibility, focused on Business Excellence, Analytics, scope for Automation & Business Optimization. Collaborating with different business units to drive initiatives favoring the best interest for the organization.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                    <p class="text-lg font-medium text-slate-300 mt-4">Vice President (Reporting, Data & Analytics)</p>
-                    <p class="text-slate-400 mt-2 leading-relaxed">Owned and drove business intelligence, analytics, and performance monitoring for Global Technology Infrastructure. Focused on business excellence, automation, and business optimization by collaborating with different business units.</p>
-                </div>
-                <!-- KYNDRYL -->
-                <div class="relative pl-12 sm:pl-32 border-l-4 border-indigo-600">
-                    <div class="absolute left-0 top-0 h-4 w-4 rounded-full bg-indigo-600 -ml-2 transform -translate-y-1"></div>
-                    <h3 class="text-xl sm:text-2xl font-semibold text-white">KYNDRYL</h3>
-                    <p class="text-sm text-slate-400 mb-2">SEP’2021 –NOV’2022</p>
-                    <p class="text-lg font-medium text-slate-300">Program Manager (Application Data & Artificial Intelligence)</p>
-                    <p class="text-slate-400 mt-2 leading-relaxed">Aligned to Global ADAI practice, owning key business functions and supporting delivery. Embraced strategic partnerships with hyperscalers like Microsoft, Google, and Amazon to drive skills enhancement and develop new offerings around their cloud services.</p>
-                </div>
-                 <!-- IBM -->
-                <div class="relative pl-12 sm:pl-32 border-l-4 border-indigo-600">
-                    <div class="absolute left-0 top-0 h-4 w-4 rounded-full bg-indigo-600 -ml-2 transform -translate-y-1"></div>
-                    <h3 class="text-xl sm:text-2xl font-semibold text-white">IBM</h3>
-                    <p class="text-sm text-slate-400 mb-2">SEP’2013 – AUG’2021</p>
-                    <p class="text-lg font-medium text-slate-300">Program Manager</p>
-                    <p class="text-slate-400 mt-2 leading-relaxed">Drove strategic initiatives focused on Enterprise Services, owning Analytics and Automation Development (SaaS) and collaborating to design and deliver modernization roadmaps across all regions.</p>
-                </div>
-                 <!-- WIPRO -->
-                <div class="relative pl-12 sm:pl-32 border-l-4 border-indigo-600">
-                    <div class="absolute left-0 top-0 h-4 w-4 rounded-full bg-indigo-600 -ml-2 transform -translate-y-1"></div>
-                    <h3 class="text-xl sm:text-2xl font-semibold text-white">WIPRO</h3>
-                    <p class="text-sm text-slate-400 mb-2">JUN’2006 – AUG’2013</p>
-                    <p class="text-lg font-medium text-slate-300">Business Analyst (PMO)</p>
-                    <p class="text-slate-400 mt-2 leading-relaxed">Responsible for business planning, including revenue and resource management. Involved in strategic planning for new projects, evaluating proposals, and facilitating monthly service governance in a multi-vendor environment.</p>
+                    <div class="accordion-item">
+                        <button id="tab-kyndryl" class="accordion-button w-full px-6 py-4 rounded-xl text-left flex justify-between items-center focus:outline-none">
+                            <div>
+                                <h3 class="text-2xl font-semibold text-white">KYNDRYL<span class="text-sm text-slate-400 ml-2">(An IBM spin-off entity)</span></h3>
+                                <p class="text-sm text-slate-400 mt-1">SEP’2021 –NOV’2022</p>
+                            </div>
+                            <svg class="w-6 h-6 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div id="content-kyndryl" class="accordion-content transition-all duration-500 rounded-b-xl ease-in-out p-6">
+                            <div class="space-y-6">
+                                <div>
+                                    <h4 class="text-lg font-medium text-slate-300 mb-2">Program Manager (ADAI - Application Data & Artificial Intelligence)</h4>
+                                    <p class="text-slate-400 leading-relaxed text-sm">Aligned to Global ADAI (Application Data & Artificial Intelligence) Practice, owning key business functions, supporting delivery across locations; focused on Program Management, Product Development, AI, Analytics, Automation & Quality Assurance. Embracing strategic partnership with Microsoft, Google, Amazon & Oracle; to drive skills enhancement, develop capabilities and new offerings around AZURE, GCP, AWS & Oracle Hyperscale’s.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <button id="tab-ibm" class="accordion-button w-full px-6 py-4 rounded-xl text-left flex justify-between items-center focus:outline-none">
+                            <div>
+                                <h3 class="text-2xl font-semibold text-white">IBM</h3>
+                                <p class="text-sm text-slate-400 mt-1">SEP’2013 – AUG’2021</p>
+                            </div>
+                            <svg class="w-6 h-6 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div id="content-ibm" class="accordion-content transition-all duration-500 rounded-b-xl ease-in-out p-6">
+                            <div class="space-y-6">
+                                <div>
+                                    <h4 class="text-lg font-medium text-slate-300 mb-2">Program Manager (Enterprise Services)</h4>
+                                    <p class="text-slate-400 leading-relaxed text-sm">Drives Strategic Initiatives focused on Enterprise Services to enhance business value for our customers and for organization. Owns Analytics and Automation Development (SaaS), focused on achieving vertical business integration. Collaborate to design Modernization roadmap & get the same delivered across all regions.</p>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-medium text-slate-300 mb-2">Program Manager (Data Analytics & Automation - APAC)</h4>
+                                    <p class="text-slate-400 leading-relaxed text-sm">Leading Analytics and Automation Adoption & deployment for all Asia Pacific accounts. Managed a portfolio of 6 Products owning adherence to forecasted milestones, release of agreed User Stories, managing backlogs across the board, along with balancing workforce to achieve optimum process efficiency. AI, Watson Analytics, Tableau Dashboard, data-driven automation initiatives, quantitative and qualitative business benefits have been key achievements during this tenure.</p>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-medium text-slate-300 mb-2">Product Manager (Analytics & Automation)</h4>
+                                    <p class="text-slate-400 leading-relaxed text-sm">Aligned to one of the largest Telco Account (ANZ market) owning Watson Analytics as a Product Owner. Managing Service Delivery across all functions, including Compute, Database, Storage, Middleware, Service Management & CRM Application. Alongside, as added responsibility, have led Automation & Agile transformation, ensuring adaptation of principles, practices & expected outcomes across all service functions.</p>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-medium text-slate-300 mb-2">Quality Assurance Manager</h4>
+                                    <p class="text-slate-400 leading-relaxed text-sm">Owns Quality Assurance Function for the account. Responsible to drive analytics-based improvement opportunities, to generate Client Value, thus, stand out as a collaborative business partner. Monitoring & reporting metrics, facilitate business governance on weekly, monthly & quarterly basis to Senior Management & Client.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <button id="tab-wipro" class="accordion-button w-full px-6 py-4 rounded-xl text-left flex justify-between items-center focus:outline-none">
+                            <div>
+                                <h3 class="text-2xl font-semibold text-white">WIPRO</h3>
+                                <p class="text-sm text-slate-400 mt-1">JUN’2006 – AUG’2013</p>
+                            </div>
+                            <svg class="w-6 h-6 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div id="content-wipro" class="accordion-content transition-all duration-500 rounded-b-xl ease-in-out p-6">
+                            <div class="space-y-6">
+                                <div>
+                                    <h4 class="text-lg font-medium text-slate-300 mb-2">Business Analyst (PMO)</h4>
+                                    <p class="text-slate-400 leading-relaxed text-sm">Responsible for Business planning including Revenue, FTE utilization, Seat Utilization, Resource Planning, Hiring and Training along with support from support departments. Involved in strategic planning/execution of new project’s SOW, including process & procedures changes. Evaluate new proposals and RFPs for senior management. Facilitating monthly Service Governance in a multi-vendor environment. Experienced in Data warehousing, predictive analysis of the process performance including requirement elicitation, risk mitigation, Business Continuity Planning and Process Improvement.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- Projects Section (using Achievements) -->
-        <section id="projects" class="py-20 px-4 bg-slate-900/80 section-fade-in">
+        <section id="projects" class="py-20 px-4 bg-slate-900/80 rounded-lg animate-on-scroll mb-8">
             <div class="container mx-auto max-w-4xl space-y-8">
-                <h2 class="text-3xl sm:text-4xl font-bold text-center text-white">Key Achievements & Initiatives</h2>
+                <h2 class="text-3xl sm:text-4xl font-bold text-center text-white animate-on-scroll">Key Achievements & Initiatives</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <!-- Achievement Card 1 -->
-                    <div class="bg-slate-700/80 rounded-lg shadow-xl p-6 hover:shadow-2xl transition-shadow duration-300">
-                        <h3 class="text-xl font-bold text-white mb-2">IBM - Hall of Fame</h3>
-                        <p class="text-slate-300">Proud recipient of the prestigious IBM – Hall of Fame award, a recognition of sustained excellence and significant contributions to the organization.</p>
+                    <!-- Achievement Cards with a cool hover effect -->
+                    <div class="relative overflow-hidden bg-slate-700/80 rounded-lg shadow-xl p-6 transition-all duration-300 group hover:shadow-2xl hover:scale-105 animate-on-scroll staggered-item" style="--delay: 0.1s">
+                        <div class="absolute inset-0 bg-blue-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+                        <h3 class="text-xl font-bold text-white mb-2 relative z-10">IBM - Hall of Fame</h3>
+                        <p class="text-slate-300 relative z-10">Proud recipient of the prestigious IBM – Hall of Fame award, a recognition of sustained excellence and significant contributions to the organization.</p>
                     </div>
-                    <!-- Achievement Card 2 -->
-                    <div class="bg-slate-700/80 rounded-lg shadow-xl p-6 hover:shadow-2xl transition-shadow duration-300">
-                        <h3 class="text-xl font-bold text-white mb-2">Watson Analytics Leadership</h3>
-                        <p class="text-slate-300">Led Watson Analytics as a Product Manager to enable comprehensive reporting and governance across all APAC accounts, driving data-driven decision-making.</p>
+                    <div class="relative overflow-hidden bg-slate-700/80 rounded-lg shadow-xl p-6 transition-all duration-300 group hover:shadow-2xl hover:scale-105 animate-on-scroll staggered-item" style="--delay: 0.2s">
+                        <div class="absolute inset-0 bg-blue-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+                        <h3 class="text-xl font-bold text-white mb-2 relative z-10">Watson Analytics Leadership</h3>
+                        <p class="text-slate-300 relative z-10">Led Watson Analytics as a Product Manager to enable comprehensive reporting and governance across all APAC accounts, driving data-driven decision-making.</p>
                     </div>
-                    <!-- Achievement Card 3 -->
-                    <div class="bg-slate-700/80 rounded-lg shadow-xl p-6 hover:shadow-2xl transition-shadow duration-300">
-                        <h3 class="text-xl font-bold text-white mb-2">Automated Risk Management</h3>
-                        <p class="text-slate-300">Developed and implemented an Automated “Risk Management Orchestration” system, significantly streamlining a critical business process.</p>
+                    <div class="relative overflow-hidden bg-slate-700/80 rounded-lg shadow-xl p-6 transition-all duration-300 group hover:shadow-2xl hover:scale-105 animate-on-scroll staggered-item" style="--delay: 0.3s">
+                        <div class="absolute inset-0 bg-blue-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+                        <h3 class="text-xl font-bold text-white mb-2 relative z-10">Automated Risk Management</h3>
+                        <p class="text-slate-300 relative z-10">Developed and implemented an Automated “Risk Management Orchestration” system, significantly streamlining a critical business process.</p>
                     </div>
-                    <!-- Achievement Card 4 -->
-                    <div class="bg-slate-700/80 rounded-lg shadow-xl p-6 hover:shadow-2xl transition-shadow duration-300">
-                        <h3 class="text-xl font-bold text-white mb-2">Qlikview Analytics Implementation</h3>
-                        <p class="text-slate-300">Successfully implemented Qlikview Analytics, providing real-time exploratory analysis capabilities for the account and empowering better insights.</p>
+                    <div class="relative overflow-hidden bg-slate-700/80 rounded-lg shadow-xl p-6 transition-all duration-300 group hover:shadow-2xl hover:scale-105 animate-on-scroll staggered-item" style="--delay: 0.4s">
+                        <div class="absolute inset-0 bg-blue-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+                        <h3 class="text-xl font-bold text-white mb-2 relative z-10">Qlikview Analytics Implementation</h3>
+                        <p class="text-slate-300 relative z-10">Successfully implemented Qlikview Analytics, providing real-time exploratory analysis capabilities for the account and empowering better insights.</p>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Contact Section -->
-        <section id="contact" class="py-20 px-4 bg-slate-900/80 section-fade-in">
+        <section id="contact" class="py-20 px-4 bg-slate-900/80 rounded-lg animate-on-scroll mb-8">
             <div class="container mx-auto max-w-2xl space-y-8 text-center">
-                <h2 class="text-3xl sm:text-4xl font-bold text-white">Contact Me</h2>
-                <p class="text-slate-400 leading-relaxed">I am always open to new opportunities and discussions. Please feel free to reach out to me via email or phone, or connect with me on LinkedIn.</p>
-                <div class="flex flex-col sm:flex-row justify-center items-center gap-6">
-                    <a href="mailto:sablok.profile84@gmail.com" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-full shadow-lg transition-transform transform hover:scale-105 duration-300">
+                <h2 class="text-3xl sm:text-4xl font-bold text-white animate-on-scroll">Contact Me</h2>
+                <p class="text-slate-400 leading-relaxed animate-on-scroll">I am always open to new opportunities and discussions. Please feel free to reach out to me via email or phone, or connect with me on LinkedIn.</p>
+                <div class="flex flex-col sm:flex-row justify-center items-center gap-6 animate-on-scroll">
+                    <a href="mailto:sablok.profile84@gmail.com" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-full shadow-lg transition-transform transform hover:scale-105 duration-300 ring-4 ring-transparent hover:ring-blue-400/50 focus:outline-none focus:ring-blue-400/50 ring-offset-2 ring-offset-slate-900">
                         Email Me
                     </a>
-                    <a href="https://www.linkedin.com/in/sachinsablok/" target="_blank" class="px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white font-medium rounded-full shadow-lg transition-transform transform hover:scale-105 duration-300">
+                    <a href="https://www.linkedin.com/in/sachinsablok/" target="_blank" class="px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white font-medium rounded-full shadow-lg transition-transform transform hover:scale-105 duration-300 ring-4 ring-transparent hover:ring-slate-400/50 focus:outline-none focus:ring-slate-400/50 ring-offset-2 ring-offset-slate-900">
                         Connect on LinkedIn
                     </a>
                 </div>
-                <div class="mt-8 space-y-2 text-slate-400">
+                <div class="mt-8 space-y-2 text-slate-400 animate-on-scroll">
                     <p><strong>Phone:</strong> (+91) 78931 77099</p>
                     <p><strong>Email:</strong> sablok.profile84@gmail.com</p>
                     <p><strong>Location:</strong> Hyderabad, India</p>
@@ -321,26 +454,38 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-slate-950/80 py-8 text-center text-slate-500">
+    <footer class="bg-slate-950/80 py-8 text-center text-slate-500 animate-on-scroll">
         <p>&copy; 2024 Sachin Sablok. All rights reserved.</p>
     </footer>
 
     <script>
         // Smooth scroll and fade-in animation
         document.addEventListener('DOMContentLoaded', () => {
-            const sections = document.querySelectorAll('.section-fade-in');
+            const sections = document.querySelectorAll('.animate-on-scroll');
+            const header = document.getElementById('main-header');
 
             const observer = new IntersectionObserver(entries => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('is-visible');
-                        observer.unobserve(entry.target);
+                    } else {
+                        // Optional: remove class when out of view, though for a portfolio site, this may not be desired.
+                        // entry.target.classList.remove('is-visible');
                     }
                 });
             }, { threshold: 0.15 });
 
             sections.forEach(section => {
                 observer.observe(section);
+            });
+
+            // Header color change on scroll
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.classList.add('bg-slate-900/80', 'backdrop-blur-sm', 'shadow-lg');
+                } else {
+                    header.classList.remove('bg-slate-900/80', 'backdrop-blur-sm', 'shadow-lg');
+                }
             });
 
             // Mobile menu toggle
@@ -358,104 +503,56 @@
                 });
             });
 
-            // Liquid Glass Effect with Three.js
-            const canvas = document.getElementById('liquid-glass-canvas');
-            const renderer = new THREE.WebGLRenderer({ canvas: canvas });
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            // View Transitions API for smooth scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
 
-            let mouse = new THREE.Vector2(0, 0);
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
 
-            // Shaders for the liquid glass effect
-            const vertexShader = `
-                uniform float u_time;
-                uniform vec2 u_mouse;
-                varying vec3 v_normal;
-                varying vec3 v_position;
-
-                void main() {
-                    v_normal = normalize(normalMatrix * normal);
-                    vec3 displacedPosition = position;
-                    // Displace vertices to create a liquid-like wave effect
-                    float displacement = sin(u_time * 0.5 + displacedPosition.x * 2.0) * 0.1;
-                    displacedPosition.z += displacement;
-                    v_position = displacedPosition;
-                    gl_Position = projectionMatrix * modelViewMatrix * vec4(displacedPosition, 1.0);
-                }
-            `;
-
-            const fragmentShader = `
-                uniform float u_time;
-                uniform vec2 u_resolution;
-                uniform vec2 u_mouse;
-                varying vec3 v_normal;
-                varying vec3 v_position;
-
-                void main() {
-                    // Normalize mouse coordinates for use in shader
-                    vec2 mouse_norm = u_mouse / u_resolution;
-                    
-                    vec3 color = vec3(0.2, 0.4, 0.9);
-                    vec3 lightDir = normalize(vec3(1.0, 1.0, 1.0));
-                    float diffuse = max(dot(v_normal, lightDir), 0.0);
-                    vec3 ambient = vec3(0.3);
-                    vec3 finalColor = color * (ambient + diffuse);
-                    
-                    // Simple fresnel effect for a glassy look
-                    float fresnel = pow(1.0 - dot(v_normal, vec3(0.0, 0.0, 1.0)), 2.0);
-                    finalColor += vec3(fresnel);
-
-                    // Simple mouse interaction effect
-                    float dist = distance(gl_FragCoord.xy / u_resolution.xy, mouse_norm);
-                    finalColor += vec3(1.0 - dist);
-
-                    gl_FragColor = vec4(finalColor, 0.5); /* Use a semi-transparent alpha */
-                }
-            `;
-
-            const geometry = new THREE.PlaneGeometry(10, 10, 128, 128);
-            const material = new THREE.ShaderMaterial({
-                vertexShader: vertexShader,
-                fragmentShader: fragmentShader,
-                uniforms: {
-                    u_time: { value: 0.0 },
-                    u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
-                    u_mouse: { value: new THREE.Vector2(0, 0) }
-                },
-                transparent: true
+                    if (targetElement) {
+                        if (document.startViewTransition) {
+                            document.startViewTransition(() => {
+                                targetElement.scrollIntoView({ behavior: 'smooth' });
+                            });
+                        } else {
+                            // Fallback for browsers that don't support View Transitions
+                            targetElement.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
+                });
             });
 
-            const plane = new THREE.Mesh(geometry, material);
-            scene.add(plane);
-            camera.position.z = 5;
+            // Accordion functionality for Experience section
+            const accordionButtons = document.querySelectorAll('.accordion-button');
+            accordionButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const content = document.getElementById(button.id.replace('tab-', 'content-'));
+                    const isActive = button.classList.contains('active');
+                    
+                    // Close all other open accordion items
+                    document.querySelectorAll('.accordion-button.active').forEach(openButton => {
+                        if (openButton !== button) {
+                            openButton.classList.remove('active');
+                            openButton.querySelector('svg').classList.remove('rotate-180');
+                            const openContent = document.getElementById(openButton.id.replace('tab-', 'content-'));
+                            openContent.classList.remove('open');
+                        }
+                    });
 
-            // Handle window resize
-            function onWindowResize() {
-                const width = window.innerWidth;
-                const height = window.innerHeight;
-                renderer.setSize(width, height);
-                camera.aspect = width / height;
-                camera.updateProjectionMatrix();
-                material.uniforms.u_resolution.value.set(width, height);
-            }
-            window.addEventListener('resize', onWindowResize);
-
-            // Handle mouse movement for interaction
-            document.addEventListener('mousemove', (event) => {
-                mouse.x = event.clientX;
-                mouse.y = window.innerHeight - event.clientY; // Flip Y for WebGL coords
-                material.uniforms.u_mouse.value.set(mouse.x, mouse.y);
+                    // Toggle the clicked item
+                    if (isActive) {
+                        button.classList.remove('active');
+                        button.querySelector('svg').classList.remove('rotate-180');
+                        content.classList.remove('open');
+                    } else {
+                        button.classList.add('active');
+                        button.querySelector('svg').classList.add('rotate-180');
+                        content.classList.add('open');
+                    }
+                });
             });
-
-            // Animation loop
-            function animate() {
-                requestAnimationFrame(animate);
-                material.uniforms.u_time.value += 0.01;
-                renderer.render(scene, camera);
-            }
-
-            // Start the animation on window load.
-            animate();
         });
     </script>
 </body>
